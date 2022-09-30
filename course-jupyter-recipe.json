@@ -1,0 +1,26 @@
+{
+  "name": "ds-course",
+  "image": {
+    "name": "flatiron-school",
+    "version": "2022.09.30",
+    "owner": "production"
+  },
+  "description": "",
+  "environment_variables": {},
+  "working_directory": "/home/jovyan/workspace",
+  "start_script": "test -e /home/jovyan/workspace/flatiron-curriculum || git clone https://github.com/saturncloud/flatiron-curriculum\n",
+  "git_repositories": [],
+  "secrets": [],
+  "jupyter_server": {
+    "instance_type": "large",
+    "disk_space": "10Gi",
+    "auto_shutoff": "1 hour",
+    "start_ssh": false,
+    "use_spot_instance": false,
+    "start_dind": false,
+    "self_destruct": false,
+    "status": "running"
+  },
+  "visibility": "owner",
+  "schema_version": "2022.08.01"
+}
