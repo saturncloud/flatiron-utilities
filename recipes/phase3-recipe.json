@@ -1,5 +1,5 @@
 {
-  "name": "ds-course",
+  "name": "ds-course-phase3",
   "image": {
     "name": "flatiron-school",
     "version": "2022.10.06",
@@ -8,7 +8,7 @@
   "description": "",
   "environment_variables": {},
   "working_directory": "/home/jovyan/workspace",
-  "start_script": "test -e /home/jovyan/workspace/flatiron-curriculum || git clone https://github.com/saturncloud/flatiron-curriculum\n",
+  "start_script": "mkdir -p /home/jovyan/flatiron-curriculum-clone\nmkdir -p /home/jovyan/workspace/flatiron-curriculum\naws s3 sync s3://flatiron-curriculum/Phase3 /home/jovyan/flatiron-curriculum-clone/Phase3 --no-sign-request\ncp -rn /home/jovyan/flatiron-curriculum-clone/* /home/jovyan/workspace/flatiron-curriculum/\n",
   "git_repositories": [],
   "secrets": [],
   "jupyter_server": {

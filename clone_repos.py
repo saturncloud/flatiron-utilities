@@ -2,7 +2,7 @@ import tempfile
 import subprocess
 import os
 from io import StringIO
-from os.path import basename
+from os.path import basename, join
 
 import pandas as pd
 
@@ -29,7 +29,14 @@ def commit_all():
     subprocess.run("git add -A", shell=True, cwd=repo)
     subprocess.run("git commit -am sync", shell=True, cwd=repo)
     subprocess.run("git push origin main", shell=True, cwd=repo)
+
     
+def sync_to_s3():
+    base_path = "/home/jovyan/workspace/flatiron-curriculum"
+    for phase in ['Phase2', 'Prep', 'Phase1', 'Phase4', 'Phase3']:
+        path = join(base_path, phase)
+        subprocess.run(f"aws s3 sync {path} s3://flatiron-curriculum/{phase}", shell=True)
+        
     
 def sync_all():
     df = pd.read_csv(StringIO(ALL_REPOS))
@@ -39,5 +46,6 @@ def sync_all():
 
         
 if __name__ == "__main__":
-    sync_all()
-    commit_all()
+    # sync_all()
+    # commit_all()
+    sync_to_s3()
