@@ -14,6 +14,12 @@ from clone_repos import sync_all, sync_to_s3
 course_base = "/home/jovyan/workspace/flatiron-curriculum"
 BASE_URL = os.getenv('BASE_URL')
 
+urls = {
+    "consumer": "https://app.flatironschool.saturnenterprise.io",
+    "enterprise": "https://app.fisenterprise.saturnenterprise.io",
+    "moringa": "https://app.moringa.saturnenterprise.io",
+    "academyxi": "https://app.academyxi.saturnenterprise.io"
+}
     
 def commit_all():
     repo = "/home/jovyan/workspace/flatiron-curriculum"
@@ -36,9 +42,11 @@ def make_links(phase_base: str, recipe_path: str) -> List[Dict]:
             print(dirname(local_path), local_path)
             uri = f"notebooks/workspace/flatiron-curriculum/{local_path}"
             frag = urlencode(dict(workspacePath=uri, apply="true", recipe=recipe_json))
-            url = f"{BASE_URL}/dash/resources?" + frag
-            print(local_path, url)
-            all_data.append(dict(local_path=local_path, url=url))
+            data = dict(local_path=local_path)
+            for k, v in urls.items():
+                url = f"{v}/dash/resources?" + frag
+                data[k] = url
+            all_data.append(data)
     return all_data
 
 
@@ -51,17 +59,19 @@ def find_links():
     all_data += make_links(f"{course_base}/Phase4", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")    
     df = pd.DataFrame(all_data)
     df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv")
+    keys = sorted(urls)
     with open("/home/jovyan/workspace/flatiron-curriculum/links.md", "w+") as f:
         for d in all_data:
-            local_path = d['local_path']
-            link = d['url']
-            f.write(f"* [{local_path}]({link})\n")
+            f.write(f"__{d['local_path']}__ \n")
+            for k in keys:
+                f.write(f"* [{k}]({d[k]})\n")
+            f.write("\n")
     
                 
 if __name__ == "__main__":
     # import json
     # json.loads(recipe_json)
-    #sync_all()
+    # sync_all()
     find_links()
     commit_all()
-    #sync_to_s3()
+    sync_to_s3()
