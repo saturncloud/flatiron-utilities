@@ -52,16 +52,43 @@ def make_links(phase_base: str, recipe_path: str) -> List[Dict]:
 
 def find_links():
     all_data = []
-    all_data += make_links(f"{course_base}/Prep", "/home/jovyan/workspace/flatiron-utilities/recipes/prep-recipe.json")
-    all_data += make_links(f"{course_base}/Phase1", "/home/jovyan/workspace/flatiron-utilities/recipes/phase1-recipe.json")
-    all_data += make_links(f"{course_base}/Phase2", "/home/jovyan/workspace/flatiron-utilities/recipes/phase2-recipe.json")
-    all_data += make_links(f"{course_base}/Phase3", "/home/jovyan/workspace/flatiron-utilities/recipes/phase3-recipe.json")
-    all_data += make_links(f"{course_base}/Phase4", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")    
-    df = pd.DataFrame(all_data)
+    
+    prep = make_links(f"{course_base}/Prep", "/home/jovyan/workspace/flatiron-utilities/recipes/prep-recipe.json")
+    phase1 = make_links(f"{course_base}/Phase1", "/home/jovyan/workspace/flatiron-utilities/recipes/phase1-recipe.json")
+    phase2 = make_links(f"{course_base}/Phase2", "/home/jovyan/workspace/flatiron-utilities/recipes/phase2-recipe.json")
+    phase3 = make_links(f"{course_base}/Phase3", "/home/jovyan/workspace/flatiron-utilities/recipes/phase3-recipe.json")
+    phase4 = make_links(f"{course_base}/Phase4", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")    
+    df = pd.DataFrame(prep + phase1 + phase2 + phase3 + phase4)
     df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv")
+
     keys = sorted(urls)
-    with open("/home/jovyan/workspace/flatiron-curriculum/links.md", "w+") as f:
-        for d in all_data:
+    
+    with open("/home/jovyan/workspace/flatiron-curriculum/prep.md", "w+") as f:
+        for d in prep:
+            f.write(f"__{d['local_path']}__ \n")
+            for k in keys:
+                f.write(f"* [{k}]({d[k]})\n")
+            f.write("\n")
+    with open("/home/jovyan/workspace/flatiron-curriculum/phase1.md", "w+") as f:
+        for d in phase1:
+            f.write(f"__{d['local_path']}__ \n")
+            for k in keys:
+                f.write(f"* [{k}]({d[k]})\n")
+            f.write("\n")
+    with open("/home/jovyan/workspace/flatiron-curriculum/phase2.md", "w+") as f:
+        for d in phase2:
+            f.write(f"__{d['local_path']}__ \n")
+            for k in keys:
+                f.write(f"* [{k}]({d[k]})\n")
+            f.write("\n")
+    with open("/home/jovyan/workspace/flatiron-curriculum/phase3.md", "w+") as f:
+        for d in phase3:
+            f.write(f"__{d['local_path']}__ \n")
+            for k in keys:
+                f.write(f"* [{k}]({d[k]})\n")
+            f.write("\n")
+    with open("/home/jovyan/workspace/flatiron-curriculum/phase4.md", "w+") as f:
+        for d in phase4:
             f.write(f"__{d['local_path']}__ \n")
             for k in keys:
                 f.write(f"* [{k}]({d[k]})\n")
