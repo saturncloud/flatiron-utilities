@@ -98,7 +98,7 @@ def find_links():
 if __name__ == "__main__":
     # import json
     # json.loads(recipe_json)
-    # sync_all()
+    sync_all()
     find_links()
     commit_all()
     sync_to_s3()
