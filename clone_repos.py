@@ -46,6 +46,6 @@ def sync_all():
 
         
 if __name__ == "__main__":
-    # sync_all()
-    # commit_all()
+    sync_all()
+    commit_all()
     sync_to_s3()
