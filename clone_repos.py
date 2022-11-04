@@ -33,7 +33,7 @@ def commit_all():
     
 def sync_to_s3():
     base_path = "/home/jovyan/workspace/flatiron-curriculum"
-    for phase in ['Phase2', 'Prep', 'Phase1', 'Phase4', 'Phase3']:
+    for phase in ['Phase2', 'Prep', 'Phase1', 'Phase4', 'Phase3', 'axi_uncategorized']:
         path = join(base_path, phase)
         subprocess.run(f"aws s3 sync {path} s3://flatiron-curriculum/{phase}", shell=True)
         

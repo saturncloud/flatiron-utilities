@@ -57,8 +57,10 @@ def find_links():
     phase1 = make_links(f"{course_base}/Phase1", "/home/jovyan/workspace/flatiron-utilities/recipes/phase1-recipe.json")
     phase2 = make_links(f"{course_base}/Phase2", "/home/jovyan/workspace/flatiron-utilities/recipes/phase2-recipe.json")
     phase3 = make_links(f"{course_base}/Phase3", "/home/jovyan/workspace/flatiron-utilities/recipes/phase3-recipe.json")
-    phase4 = make_links(f"{course_base}/Phase4", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")    
-    df = pd.DataFrame(prep + phase1 + phase2 + phase3 + phase4)
+    phase4 = make_links(f"{course_base}/Phase4", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")
+    axi_uncategorized = make_links(f"{course_base}/axi_uncategorized", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")
+    
+    df = pd.DataFrame(prep + phase1 + phase2 + phase3 + phase4 + axi_uncategorized)
     df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv")
 
     keys = sorted(urls)
@@ -89,6 +91,12 @@ def find_links():
             f.write("\n")
     with open("/home/jovyan/workspace/flatiron-curriculum/phase4.md", "w+") as f:
         for d in phase4:
+            f.write(f"__{d['local_path']}__ \n")
+            for k in keys:
+                f.write(f"* [{k}]({d[k]})\n")
+            f.write("\n")
+    with open("/home/jovyan/workspace/flatiron-curriculum/axi_uncategorized.md", "w+") as f:
+        for d in axi_uncategorized:
             f.write(f"__{d['local_path']}__ \n")
             for k in keys:
                 f.write(f"* [{k}]({d[k]})\n")
