@@ -5,12 +5,14 @@ import os
 from os.path import relpath, join, dirname
 from urllib.parse import urlencode
 import subprocess
+from io import StringIO
 
 import pandas as pd
 
 from clone_repos import sync_all, sync_to_s3
 
 
+ALL_REPOS = os.getenv("ALL_REPOS")
 course_base = "/home/jovyan/workspace/flatiron-curriculum"
 BASE_URL = os.getenv('BASE_URL')
 
@@ -28,10 +30,10 @@ def commit_all():
     subprocess.run("git push origin main", shell=True, cwd=repo)
     
     
-def make_links(phase_base: str, recipe_path: str) -> List[Dict]:
+def make_links(phase: str, phase_base: str, recipe_path: str) -> List[Dict]:
     with open(recipe_path) as f:
         recipe_json = f.read()
-        
+    recipe_json = recipe_json.replace('{phase_lowered}', phase.lower()).replace('{phase}', phase)
     all_data = []
     for root, directories, files in walk(phase_base):
         for f in files:
@@ -50,63 +52,45 @@ def make_links(phase_base: str, recipe_path: str) -> List[Dict]:
     return all_data
 
 
-def find_links():
+def find_links(phases: List[str]):
     all_data = []
-    
-    prep = make_links(f"{course_base}/Prep", "/home/jovyan/workspace/flatiron-utilities/recipes/prep-recipe.json")
-    phase1 = make_links(f"{course_base}/Phase1", "/home/jovyan/workspace/flatiron-utilities/recipes/phase1-recipe.json")
-    phase2 = make_links(f"{course_base}/Phase2", "/home/jovyan/workspace/flatiron-utilities/recipes/phase2-recipe.json")
-    phase3 = make_links(f"{course_base}/Phase3", "/home/jovyan/workspace/flatiron-utilities/recipes/phase3-recipe.json")
-    phase4 = make_links(f"{course_base}/Phase4", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")
-    axi_uncategorized = make_links(f"{course_base}/axi_uncategorized", "/home/jovyan/workspace/flatiron-utilities/recipes/phase4-recipe.json")
-    
-    df = pd.DataFrame(prep + phase1 + phase2 + phase3 + phase4 + axi_uncategorized)
+    by_phase = {}
+    for phase in phases:
+        data = make_links(phase, f"{course_base}/{phase}", "/home/jovyan/workspace/flatiron-utilities/recipes/recipe.json")
+        all_data.extend(data)
+        by_phase[phase] = data
+            
+    df = pd.DataFrame(all_data)
     df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv")
 
     keys = sorted(urls)
     
-    with open("/home/jovyan/workspace/flatiron-curriculum/prep.md", "w+") as f:
-        for d in prep:
-            f.write(f"__{d['local_path']}__ \n")
-            for k in keys:
-                f.write(f"* [{k}]({d[k]})\n")
-            f.write("\n")
-    with open("/home/jovyan/workspace/flatiron-curriculum/phase1.md", "w+") as f:
-        for d in phase1:
-            f.write(f"__{d['local_path']}__ \n")
-            for k in keys:
-                f.write(f"* [{k}]({d[k]})\n")
-            f.write("\n")
-    with open("/home/jovyan/workspace/flatiron-curriculum/phase2.md", "w+") as f:
-        for d in phase2:
-            f.write(f"__{d['local_path']}__ \n")
-            for k in keys:
-                f.write(f"* [{k}]({d[k]})\n")
-            f.write("\n")
-    with open("/home/jovyan/workspace/flatiron-curriculum/phase3.md", "w+") as f:
-        for d in phase3:
-            f.write(f"__{d['local_path']}__ \n")
-            for k in keys:
-                f.write(f"* [{k}]({d[k]})\n")
-            f.write("\n")
-    with open("/home/jovyan/workspace/flatiron-curriculum/phase4.md", "w+") as f:
-        for d in phase4:
-            f.write(f"__{d['local_path']}__ \n")
-            for k in keys:
-                f.write(f"* [{k}]({d[k]})\n")
-            f.write("\n")
-    with open("/home/jovyan/workspace/flatiron-curriculum/axi_uncategorized.md", "w+") as f:
-        for d in axi_uncategorized:
-            f.write(f"__{d['local_path']}__ \n")
-            for k in keys:
-                f.write(f"* [{k}]({d[k]})\n")
-            f.write("\n")
-    
+    for phase in phases:
+        data = by_phase[phase]
+        phase_lower = phase.lower()
+        with open(f"/home/jovyan/workspace/flatiron-curriculum/{phase_lower}.md", "w+") as f:
+            for d in data:
+                f.write(f"__{d['local_path']}__ \n")
+                for k in keys:
+                    f.write(f"* [{k}]({d[k]})\n")
+                f.write("\n")
+                
+                
+def get_phases():
+    df = pd.read_csv(StringIO(ALL_REPOS))
+    data = []
+    for phase, repo in zip(df['Consumer Phase'].tolist(), df['Repository'].tolist()):
+        phase = "".join(c for c in phase if c.isalnum())
+        if repo and "deloitte" not in repo:
+            data.append((phase, repo))
+    all_phases = list(set(x[0] for x in data))
+    return all_phases
+
                 
 if __name__ == "__main__":
     # import json
     # json.loads(recipe_json)
-    sync_all()
-    find_links()
+    phases = get_phases()
+    find_links(phases)
     commit_all()
-    sync_to_s3()
+    

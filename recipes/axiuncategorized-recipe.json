@@ -1,5 +1,5 @@
 {
-  "name": "ds-course-phase4",
+  "name": "ds-course-uncategorized",
   "image": {
     "name": "flatiron-school",
     "version": "2022.10.11",
@@ -8,7 +8,7 @@
   "description": "",
   "environment_variables": {},
   "working_directory": "/home/jovyan/workspace",
-  "start_script": "mkdir -p /home/jovyan/flatiron-curriculum-clone\nmkdir -p /home/jovyan/workspace/flatiron-curriculum\naws s3 sync s3://flatiron-curriculum/axi_uncategorized /home/jovyan/flatiron-curriculum-clone/axi_uncategorized --no-sign-request\ncp -rn /home/jovyan/flatiron-curriculum-clone/* /home/jovyan/workspace/flatiron-curriculum/\n",
+  "start_script": "mkdir -p /home/jovyan/flatiron-curriculum-clone\nmkdir -p /home/jovyan/workspace/flatiron-curriculum\naws s3 sync s3://flatiron-curriculum/axiuncategorized /home/jovyan/flatiron-curriculum-clone/axiuncategorized --no-sign-request\ncp -rn /home/jovyan/flatiron-curriculum-clone/* /home/jovyan/workspace/flatiron-curriculum/\n",
   "git_repositories": [],
   "secrets": [],
   "jupyter_server": {
