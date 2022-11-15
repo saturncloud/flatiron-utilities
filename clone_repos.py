@@ -43,7 +43,7 @@ def sync_all():
     data = []
     for phase, repo in zip(df['Consumer Phase'].tolist(), df['Repository'].tolist()):
         phase = "".join(c for c in phase if c.isalnum())
-        if repo and "deloitte" not in repo:
+        if repo:
             data.append((phase, repo))
     all_phases = list(set(x[0] for x in data))
     for phase, repo in data:
