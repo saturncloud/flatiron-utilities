@@ -3,7 +3,7 @@ from typing import List
 import subprocess
 import os
 from io import StringIO
-from os.path import basename, join
+from os.path import basename, join, exists
 
 import pandas as pd
 
@@ -12,12 +12,14 @@ ALL_REPOS = os.getenv("ALL_REPOS")
 
 
 def handle_repo(url: str, phase: str):
+    dest = basename(url)
+    dest = f"/home/jovyan/workspace/flatiron-curriculum/{phase}/{dest}/"
+    if exists(dest):
+        return
     with tempfile.TemporaryDirectory() as tempdir:
         cmd = f"git clone {url} {tempdir}"
         print(cmd)
         subprocess.run(cmd, shell=True)
-        dest = basename(url)
-        dest = f"/home/jovyan/workspace/flatiron-curriculum/{phase}/{dest}/"
         os.makedirs(dest, exist_ok=True)
         cmd = f"rsync -avzP --exclude .git {tempdir}/ {dest}"
         print(cmd)
