@@ -19,7 +19,8 @@
     "use_spot_instance": false,
     "start_dind": false,
     "self_destruct": false,
-    "status": "running"
+    "status": "running",
+    "expose_app_port": true
   },
   "visibility": "owner",
   "schema_version": "2022.08.01"
