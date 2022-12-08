@@ -3,7 +3,9 @@ from make_links import find_links
 
 
 if __name__ == "__main__":
-    sync_all()
-    find_links()
+    all_phases = sync_all()
+    sync_to_s3(all_phases)
+    phases = get_phases()
+    find_links(phases)
     commit_all()
-    sync_to_s3()
+    
