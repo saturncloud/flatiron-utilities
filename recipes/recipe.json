@@ -2,7 +2,7 @@
   "name": "ds-course-{phase_lowered}",
   "image": {
     "name": "flatiron-school",
-    "version": "2023.01.12",
+    "version": "2023.01.12-2",
     "owner": "production"
   },
   "description": "",
