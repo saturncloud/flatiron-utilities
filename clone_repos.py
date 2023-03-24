@@ -11,10 +11,10 @@ import pandas as pd
 ALL_REPOS = os.getenv("ALL_REPOS")
 
 
-def handle_repo(url: str, phase: str):
+def handle_repo(url: str, phase: str, force=True):
     dest = basename(url)
     dest = f"/home/jovyan/workspace/flatiron-curriculum/{phase}/{dest}/"
-    if exists(dest):
+    if exists(dest) and not force:
         return
     with tempfile.TemporaryDirectory() as tempdir:
         cmd = f"git clone {url} {tempdir}"
@@ -40,7 +40,7 @@ def sync_to_s3(all_phases: List[str]):
         subprocess.run(f"aws s3 sync {path} s3://flatiron-curriculum/{phase}", shell=True)
         
     
-def sync_all():
+def sync_all(force=True):
     df = pd.read_csv(StringIO(ALL_REPOS))
     data = []
     for phase, repo in zip(df['Consumer Phase'].tolist(), df['Repository'].tolist()):
@@ -49,7 +49,7 @@ def sync_all():
             data.append((phase, repo))
     all_phases = list(set(x[0] for x in data))
     for phase, repo in data:
-        handle_repo(repo, phase)
+        handle_repo(repo, phase, force=force)
     return all_phases
 
 
