@@ -28,8 +28,19 @@ def commit_all():
     subprocess.run("git add -A", shell=True, cwd=repo)
     subprocess.run("git commit -am sync", shell=True, cwd=repo)
     subprocess.run("git push origin main", shell=True, cwd=repo)
+
     
-    
+def make_just_phase_link(phase: str, recipe_path: str, base_url: str, suffix: str) -> List[Dict]:
+    with open(recipe_path) as f:
+        recipe_json = f.read()
+    recipe_json = recipe_json.replace('{phase_lowered}', phase.lower()).replace('{phase}', phase)
+    all_data = []
+    uri = f"tree/workspace/flatiron-curriculum/{phase}/{suffix}"
+    frag = urlencode(dict(workspacePath=uri, apply="true", recipe=recipe_json))
+    url = f"{base_url}/dash/resources?" + frag
+    return url
+
+
 def make_links(phase: str, phase_base: str, recipe_path: str) -> List[Dict]:
     with open(recipe_path) as f:
         recipe_json = f.read()
