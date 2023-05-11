@@ -20,7 +20,8 @@ urls = {
     "consumer": "https://app.flatironschool.saturnenterprise.io",
     "enterprise": "https://app.fisenterprise.saturnenterprise.io",
     "moringa": "https://app.moringa.saturnenterprise.io",
-    "academyxi": "https://app.academyxi.saturnenterprise.io"
+    "academyxi": "https://app.academyxi.saturnenterprise.io",
+    "vanguard": "https://app.vanguarddigital.saturnenterprise.io",
 }
     
 def commit_all():
