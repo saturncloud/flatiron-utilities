@@ -75,7 +75,7 @@ def find_links(phases: List[str]):
             
     df = pd.DataFrame(all_data)
     df = df.sort_values('local_path')
-    df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv", index_col=False)
+    df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv", index=False)
 
     keys = sorted(urls)
     
