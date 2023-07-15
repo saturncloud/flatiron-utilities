@@ -22,6 +22,7 @@ urls = {
     "moringa": "https://app.moringa.saturnenterprise.io",
     "academyxi": "https://app.academyxi.saturnenterprise.io",
     "vanguard": "https://app.vanguarddigital.saturnenterprise.io",
+    "codeclan": "https://app.codeclan.saturnenterprise.io"
 }
     
 def commit_all():
@@ -74,7 +75,7 @@ def find_links(phases: List[str]):
             
     df = pd.DataFrame(all_data)
     df = df.sort_values('local_path')
-    df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv")
+    df.to_csv("/home/jovyan/workspace/flatiron-curriculum/links.csv", index_col=False)
 
     keys = sorted(urls)
     
