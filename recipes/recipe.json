@@ -8,7 +8,7 @@
   "description": "",
   "environment_variables": {"TF_CPP_MIN_LOG_LEVEL": "3"},
   "working_directory": "/home/jovyan/workspace",
-  "start_script": "mkdir -p /home/jovyan/flatiron-curriculum-clone\nmkdir -p /home/jovyan/workspace/flatiron-curriculum\naws s3 sync s3://flatiron-curriculum/{phase} /home/jovyan/flatiron-curriculum-clone/{phase} --no-sign-request\ncp -rn /home/jovyan/flatiron-curriculum-clone/* /home/jovyan/workspace/flatiron-curriculum/\n",
+  "start_script": "mkdir -p /home/jovyan/flatiron-curriculum-clone\nmkdir -p /home/jovyan/workspace/flatiron-curriculum\naws s3 sync s3://flatiron-curriculum/{phase} /home/jovyan/flatiron-curriculum-clone/{phase} --no-sign-request --exact-timestamps\ncp -rn /home/jovyan/flatiron-curriculum-clone/* /home/jovyan/workspace/flatiron-curriculum/\n",
   "git_repositories": [],
   "secrets": [],
   "jupyter_server": {
