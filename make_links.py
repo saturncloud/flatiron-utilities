@@ -22,7 +22,6 @@ urls = {
     "moringa": "https://app.moringa.saturnenterprise.io",
     "academyxi": "https://app.academyxi.saturnenterprise.io",
     "vanguard": "https://app.vanguarddigital.saturnenterprise.io",
-    "codeclan": "https://app.codeclan.saturnenterprise.io"
 }
     
 def commit_all():
