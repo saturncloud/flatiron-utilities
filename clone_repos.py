@@ -44,6 +44,8 @@ def sync_all(force=True):
     df = pd.read_csv(StringIO(ALL_REPOS))
     data = []
     for phase, repo in zip(df['Consumer Phase'].tolist(), df['Repository'].tolist()):
+        repo = repo.strip()
+        repo = repo.strip('/')
         phase = "".join(c for c in phase if c.isalnum())
         if repo:
             data.append((phase, repo))
