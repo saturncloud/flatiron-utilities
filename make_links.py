@@ -76,6 +76,7 @@ def make_links(phase: str, phase_base: str) -> List[Dict]:
                 url = f"{v}/dash/resources?" + frag
                 data[k] = url
             all_data.append(data)
+    all_data = sorted(all_data, key = lambda x: x['local_path'])
     return all_data
 
 
