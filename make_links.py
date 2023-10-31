@@ -1,3 +1,4 @@
+from functools import cache
 import json
 from typing import Dict, List
 from os import walk
@@ -23,7 +24,23 @@ urls = {
     "academyxi": "https://app.academyxi.saturnenterprise.io",
     "vanguard": "https://app.vanguarddigital.saturnenterprise.io",
 }
-    
+default_recipe_path = "/home/jovyan/workspace/flatiron-utilities/recipes/recipe.json"
+recipe_paths = {
+    "moringa": "/home/jovyan/workspace/flatiron-utilities/recipes/recipe_moringa.json"
+}
+
+
+@cache
+def get_recipe_json(installation: str, phase: str) -> str:
+    recipe_path = recipe_paths.get(installation, None)
+    if recipe_path is None:
+        recipe_path = default_recipe_path
+    with open(recipe_path, "r") as f:
+        recipe_json = f.read()
+    recipe_json = recipe_json.replace('{phase_lowered}', phase.lower()).replace('{phase}', phase)
+    return recipe_json
+
+
 def commit_all():
     repo = "/home/jovyan/workspace/flatiron-curriculum"
     subprocess.run("git add -A", shell=True, cwd=repo)
@@ -31,7 +48,7 @@ def commit_all():
     subprocess.run("git push origin main", shell=True, cwd=repo)
 
     
-def make_just_phase_link(phase: str, recipe_path: str, base_url: str, suffix: str) -> List[Dict]:
+def make_just_phase_link(phase: str, recipe_path: str, base_url: str, suffix: str) -> str:
     with open(recipe_path) as f:
         recipe_json = f.read()
     recipe_json = recipe_json.replace('{phase_lowered}', phase.lower()).replace('{phase}', phase)
@@ -42,10 +59,7 @@ def make_just_phase_link(phase: str, recipe_path: str, base_url: str, suffix: st
     return url
 
 
-def make_links(phase: str, phase_base: str, recipe_path: str) -> List[Dict]:
-    with open(recipe_path) as f:
-        recipe_json = f.read()
-    recipe_json = recipe_json.replace('{phase_lowered}', phase.lower()).replace('{phase}', phase)
+def make_links(phase: str, phase_base: str) -> List[Dicrt]:
     all_data = []
     for root, directories, files in walk(phase_base):
         for f in files:
@@ -55,9 +69,10 @@ def make_links(phase: str, phase_base: str, recipe_path: str) -> List[Dict]:
             local_path = relpath(notebook_path, course_base)
             print(dirname(local_path), local_path)
             uri = f"notebooks/workspace/flatiron-curriculum/{local_path}"
-            frag = urlencode(dict(workspacePath=uri, apply="true", recipe=recipe_json))
             data = dict(local_path=local_path)
             for k, v in urls.items():
+                recipe_json = get_recipe_json(k, phase)
+                frag = urlencode(dict(workspacePath=uri, apply="true", recipe=recipe_json))
                 url = f"{v}/dash/resources?" + frag
                 data[k] = url
             all_data.append(data)
@@ -68,7 +83,7 @@ def find_links(phases: List[str]):
     all_data = []
     by_phase = {}
     for phase in phases:
-        data = make_links(phase, f"{course_base}/{phase}", "/home/jovyan/workspace/flatiron-utilities/recipes/recipe.json")
+        data = make_links(phase, f"{course_base}/{phase}")
         all_data.extend(data)
         by_phase[phase] = data
             
