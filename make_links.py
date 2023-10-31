@@ -59,7 +59,7 @@ def make_just_phase_link(phase: str, recipe_path: str, base_url: str, suffix: st
     return url
 
 
-def make_links(phase: str, phase_base: str) -> List[Dicrt]:
+def make_links(phase: str, phase_base: str) -> List[Dict]:
     all_data = []
     for root, directories, files in walk(phase_base):
         for f in files:
